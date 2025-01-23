@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Neural Network - From Perceptrons to Layers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            font-size: 150%;
+        }
+        section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        h1, h2, h3, h4 {
+            color: #333;
+            margin-top: 20px;
+        }
+        p, li {
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .image-placeholder, .interactive-placeholder, .continue-button, .vocab-section, .why-it-matters, .test-your-knowledge, .faq-section, .stop-and-think {
+            text-align: left;
+        }
+        .image-placeholder img, .interactive-placeholder img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .vocab-section, .why-it-matters, .test-your-knowledge, .faq-section, .stop-and-think {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .vocab-section {
+            background-color: #f0f8ff;
+        }
+        .vocab-section h3 {
+            color: #1e90ff;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .vocab-section h4 {
+            color: #000;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+        .vocab-term {
+            font-weight: bold;
+            color: #1e90ff;
+        }
+        .why-it-matters {
+            background-color: #ffe6f0;
+        }
+        .why-it-matters h3 {
+            color: #d81b60;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .stop-and-think {
+            background-color: #e6e6ff;
+        }
+        .stop-and-think h3 {
+            color: #4b0082;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .continue-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            color: #ffffff;
+            background-color: #007bff;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .reveal-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            color: #ffffff;
+            background-color: #4b0082;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .test-your-knowledge {
+            background-color: #e6ffe6;
+        }
+        .test-your-knowledge h3 {
+            color: #28a745;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .test-your-knowledge h4 {
+            color: #000;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+        .test-your-knowledge p {
+            margin-bottom: 15px;
+        }
+        .check-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 15px;
+            color: #ffffff;
+            background-color: #28a745;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            font-size: 1em;
+        }
+        .faq-section {
+            background-color: #fffbea;
+        }
+        .faq-section h3 {
+            color: #ffcc00;
+            font-size: 0.75em;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .faq-section h4 {
+            color: #000;
+            font-size: 0.9em;
+            margin-top: 10px;
+            margin-bottom: 8px;
+        }
+    </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <section id="section1">
+        <h1>Building a Neural Network - From Perceptrons to Layers</h1>
+        <div class="image-placeholder">
+            <img src="/placeholder.svg?height=300&width=600" alt="A visual comparison of a single perceptron and a simple neural network with multiple layers, highlighting the increased complexity and capability.">
+        </div>
+        <h2>Beyond Single Perceptrons: Building Networks</h2>
+        <p>Welcome back! We've seen how a single perceptron can act as a linear classifier. But the real power of neural networks comes from combining multiple perceptrons (or more generally, artificial neurons) into interconnected <strong>layers</strong>, forming a network. This allows us to model much more complex relationships and solve problems that are beyond the capabilities of a single perceptron.</p>
+        <div class="continue-button" onclick="showNextSection(2)">Continue</div>
+    </section>
+
+    <section id="section2">
+        <h2>The Layered Architecture: Input, Hidden, and Output</h2>
+        <p>A typical feedforward neural network is organized into layers of neurons. These layers can be broadly categorized into:</p>
+        <ol>
+            <li>
+                <strong>Input Layer:</strong> This is the first layer of the network, and it simply receives the raw input data. Each neuron in the input layer corresponds to a feature in the input data. For example, if the input is an image, each neuron might represent a pixel value.
+                <div class="vocab-section">
+                    <h3>Build Your Vocab</h3>
+                    <h4 class="vocab-term">Input Layer</h4>
+                    <p>The first layer in a neural network, responsible for receiving the raw input data.</p>
+                </div>
+            </li>
+            <li>
+                <strong>Hidden Layer(s):</strong> These are the layers between the input and output layers. They perform computations on the data, extracting features and transforming the information. The term "hidden" refers to the fact that the outputs of these layers are not directly observed as part of the final output. A network can have one or more hidden layers. More hidden layers generally allow the network to learn more complex patterns, but they also increase the complexity of training.
+                <div class="vocab-section">
+                    <h3>Build Your Vocab</h3>
+                    <h4 class="vocab-term">Hidden Layer</h4>
+                    <p>One or more layers between the input and output layers that perform computations on the data, extracting features and transforming the information.</p>
+                </div>
+            </li>
+            <li>
+                <strong>Output Layer:</strong> This is the final layer of the network. It produces the network's prediction or output. The number of neurons in the output layer depends on the task. For example, in a binary classification problem (like classifying marbles as balanced or defective), the output layer might have a single neuron, where the output represents the probability of the input belonging to a particular class.
+                <div class="vocab-section">
+                    <h3>Build Your Vocab</h3>
+                    <h4 class="vocab-term">Output Layer</h4>
+                    <p>The final layer in a neural network, responsible for producing the network's prediction or output.</p>
+                </div>
+            </li>
+        </ol>
+        <p>Let's visualize this layered structure:</p>
+        <div class="image-placeholder">
+            <img src="/placeholder.svg?height=400&width=600" alt="Feedforward Neural Network Architecture: A diagram of a feedforward neural network showing the input layer (Layer 0), hidden layer (Layer 1), and output layer (Layer 2). Circles represent neurons, lines represent connections between neurons. Each layer is labeled, and arrows indicate the direction of information flow. Connections are labeled with weights (w_ij^(k)), neurons are labeled with activations (a_j^(k)) and include bias terms (b_j^(k)). The path from input x_2 to hidden neuron a_2^(1) to output neuron a_1^(2) is highlighted.">
+        </div>
+        <p>In this diagram, you can see how the information flows from the input layer, through the hidden layer, and finally to the output layer. Each connection between neurons has an associated weight, and each neuron has a bias.</p>
+        <div class="continue-button" onclick="showNextSection(3)">Continue</div>
+    </section>
+
+    <section id="section3">
+        <h2>Calculating Neuron Activation</h2>
+        <p>Now let's focus on how we calculate the activation of a neuron in the hidden layer. For example, let's take neuron a<sub>2</sub><sup>(1)</sup> in the hidden layer of the network shown in the diagram. Its activation is determined by the weighted sum of the activations from the input layer, plus its bias, all passed through an activation function.</p>
+        <div class="mathematically-step-by-step">
+            <h3>Calculating Activation of a Neuron in the Hidden Layer</h3>
+            <ol>
+                <li>
+                    <p>The activation of a neuron in the hidden layer is calculated as follows:</p>
+                    <p>\[ a_j^{(l)} = \phi\left( \sum_{i=1}^m w_{ji}^{(l)} * a_i^{(l-1)} + b_j^{(l)} \right) \]</p>
+                    <p>Where:</p>
+                    <ul>
+                        <li>$$ a_j^{(l)} $$ is the activation of the j-th neuron in layer l.</li>
+                        <li>$$ \phi $$ is the activation function.</li>
+                        <li>$$ w_{ji}^{(l)} $$ is the weight connecting the i-th neuron in layer (l-1) to the j-th neuron in layer l.</li>
+                        <li>$$ a_i^{(l-1)} $$ is the activation of the i-th neuron in layer (l-1). This is the output from the previous layer.</li>
+                        <li>$$ b_j^{(l)} $$ is the bias of the j-th neuron in layer l.</li>
+                    </ul>
+                </li>
+                <li>
+                    <p>Let's make this concrete with an example. Suppose we want to calculate the activation of neuron a<sub>2</sub><sup>(1)</sup> in the hidden layer of our diagram.</p>
+                </li>
+                <li>
+                    <p>Assume the following:</p>
+                    <ul>
+                        <li>$$ x_1 = 0.5 $$ (This is the same as $$ a_1^{(0)} $$)</li>
+                        <li>$$ x_2 = 1.0 $$ (This is the same as $$ a_2^{(0)} $$)</li>
+                        <li>$$ w_{21}^{(1)} = 0.2 $$</li>
+                        <li>$$ w_{22}^{(1)} = 0.8 $$</li>
+                        <li>$$ b_2^{(1)} = 0.1 $$</li>
+                        <li>$$ \phi(z) = sigmoid(z) = \frac{1}{1 + e^{-z}} $$ (We're using the sigmoid activation function here)</li>
+                    </ul>
+                </li>
+                <li>
+                    <p>First, calculate the weighted sum $$ z $$:</p>
+                    <p>\[ z = (0.2 * 0.5) + (0.8 * 1.0) + 0.1 = 0.1 + 0.8 + 0.1 = 1.0 \]</p>
+                </li>
+                <li>
+                    <p>Then, apply the sigmoid activation function:</p>
+                    <p>\[ a_2^{(1)} = sigmoid(1.0) = \frac{1}{1 + e^{-1.0}} \approx 0.731 \]</p>
+                </li>
+                <li>
+                    <p>So, the activation of neuron a<sub>2</sub><sup>(1)</sup> is approximately 0.731.</p>
+                </li>
+            </ol>
+        </div>
+        <div class="continue-button" onclick="showNextSection(4)">Continue</div>
+    </section>
+
+    <section id="section4">
+        <div class="stop-and-think">
+            <h3>Stop and Think</h3>
+            <h4>How would you describe the flow of information in a feedforward neural network in your own words?</h4>
+            <button class="reveal-button" onclick="revealAnswer('stop-and-think-1')">Reveal</button>
+            <p id="stop-and-think-1" style="display: none;">Information flows in one direction, from the input layer to the output layer, passing through one or more hidden layers. Each neuron receives weighted inputs from the previous layer, adds a bias, applies an activation function, and passes its output to the next layer.</p>
+        </div>
+        <div class="stop-and-think">
+            <h3>Stop and Think</h3>
+            <h4>What is the purpose of having multiple layers in a neural network?</h4>
+            <button class="reveal-button" onclick="revealAnswer('stop-and-think-2')">Reveal</button>
+            <p id="stop-and-think-2" style="display: none;">Multiple layers allow the network to learn hierarchical representations of the data. Each layer can learn increasingly complex features by building upon the features learned by the previous layers. This enables the network to model non-linear relationships and solve more complex problems.</p>
+        </div>
+        <div class="continue-button" onclick="showNextSection(5)">Continue</div>
+    </section>
+
+    <section id="section5">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-section">
+            <h3>FAQ</h3>
+            <h4>What is a "feedforward" neural network?</h4>
+            <p>In a feedforward network, the information flows in only one direction – from the input layer to the output layer, without any loops or feedback connections. This is in contrast to recurrent neural networks, which have feedback connections that allow information to persist over time.</p>
+            <h4>How do you determine the number of hidden layers and neurons in a neural network?</h4>
+            <p>There's no one-size-fits-all answer. It often involves experimentation and depends on the complexity of the problem, the amount of data available, and computational resources. Techniques like cross-validation can help in finding a good architecture. Generally, deeper networks (more layers) can learn more complex patterns, but they also require more data and are more prone to overfitting if not properly regularized.</p>
+        </div>
+        <div class="continue-button" onclick="showNextSection(6)">Continue</div>
+    </section>
+
+    <section id="section6">
+        <h2>Test Your Knowledge</h2>
+        <div class="test-your-knowledge">
+            <h3>Quiz</h3>
+            <h4>In a feedforward neural network, where does the activation of a neuron in the hidden layer come from?</h4>
+            <form id="quiz-form">
+                <input type="radio" id="option1" name="quiz" value="1">
+                <label for="option1">Directly from the input layer.</label><br>
+                <input type="radio" id="option2" name="quiz" value="2">
+                <label for="option2">From the weighted sum of the activations of neurons in the previous layer, plus a bias, passed through an activation function.</label><br>
+                <input type="radio" id="option3" name="quiz" value="3">
+                <label for="option3">Directly from the output layer.</label><br>
+                <input type="radio" id="option4" name="quiz" value="4">
+                <label for="option4">From a random number generator.</label><br>
+                <button type="button" class="check-button" onclick="checkAnswer()">Check Answer</button>
+            </form>
+            <p id="quiz-result" style="display: none;"></p>
+        </div>
+        <div class="continue-button" onclick="showNextSection(7)">Continue</div>
+    </section>
+
+    <section id="section7">
+        <h2>Review and Reflect</h2>
+        <p>In this lesson, we've learned how to build a neural network by connecting multiple perceptrons (or artificial neurons) into layers. We've explored the roles of the input, hidden, and output layers and seen how information flows through the network. We've also delved into the mathematics of calculating neuron activations, using the sigmoid function as an example. In the next lesson, we will take a closer look at understanding neural network architectures.</p>
+        <div class="image-placeholder">
+            <img src="/placeholder.svg?height=300&width=600" alt="A conceptual image representing the progression from a single perceptron to a multi-layered neural network, symbolizing the increasing power and complexity.">
+        </div>
+    </section>
+
+    <script>
+        // Show the first section initially
+        document.getElementById("section1").style.display = "block";
+        document.getElementById("section1").style.opacity = "1";
+
+        function showNextSection(nextSectionId) {
+            const currentButton = event.target;
+            const nextSection = document.getElementById("section" + nextSectionId);
+            
+            currentButton.style.display = "none";
+            
+            nextSection.style.display = "block";
+            setTimeout(() => {
+                nextSection.style.opacity = "1";
+            }, 10);
+
+            setTimeout(() => {
+                nextSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 500);
+        }
+
+        function revealAnswer(id) {
+            const revealText = document.getElementById(id);
+            const revealButton = event.target;
+            
+            revealText.style.display = "block";
+            revealButton.style.display = "none";
+        }
+
+        function checkAnswer() {
+            const form = document.getElementById('quiz-form');
+            const result = document.getElementById('quiz-result');
+            const selectedOption = form.querySelector('input[name="quiz"]:checked');
+
+            if (selectedOption) {
+                if (selectedOption.value === "2") {
+                    result.textContent = "Correct! The activation of a neuron in the hidden layer is determined by the weighted sum of the activations from the previous layer, plus its bias, all passed through an activation function.";
+                    result.style.color = "green";
+                } else {
+                    result.textContent = "Incorrect. The correct answer is: From the weighted sum of the activations of neurons in the previous layer, plus a bias, passed through an activation function.";
+                    result.style.color = "red";
+                }
+                result.style.display = "block";
+            } else {
+                alert("Please select an answer before checking.");
+            }
+        }
+    </script>
+</body>
+</html>
